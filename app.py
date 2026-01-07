@@ -7,11 +7,6 @@ import cloudpickle
 # WAJIB: fungsi HARUS ADA
 # SEBELUM joblib.load
 # ==============================
-def to_1d_str(x):
-    x = np.asarray(x)
-    if x.ndim == 2:
-        x = x.ravel()
-    return [str(v) for v in x]
 
 # ==============================
 # Page config
@@ -99,6 +94,7 @@ if st.button("Predict Engagement Rate"):
 
     st.write("Prediction raw output:", prediction)
     st.success(f"Predicted Engagement Rate: {prediction[0]:.4f}")
+
 
 
 
