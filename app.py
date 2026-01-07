@@ -92,10 +92,10 @@ if st.button("Predict Engagement Rate"):
         'country': ['US'],
         'consumer_industry': ['General'],
         'continent': ['North America'],
-        'text_all_clean': ['neutral post']
     })
 
     prediction = model.predict(input_df)
 
     st.write("Prediction raw output:", prediction)
     st.success(f"Predicted Engagement Rate: {prediction[0]:.4f}")
+
