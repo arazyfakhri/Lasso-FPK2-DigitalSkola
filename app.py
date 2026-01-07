@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import joblib
+import cloudpickle
 
 # ==============================
 # WAJIB: fungsi HARUS ADA
@@ -27,7 +27,8 @@ st.write("Model: Lasso Regression")
 # ==============================
 # Load model (SETELAH fungsi)
 # ==============================
-model = joblib.load("model_v2.pkl")
+with open("model_cloud.pkl", "rb") as f:
+    model = cloudpickle.load(f)
 
 # ==============================
 # Input UI
@@ -98,5 +99,6 @@ if st.button("Predict Engagement Rate"):
 
     st.write("Prediction raw output:", prediction)
     st.success(f"Predicted Engagement Rate: {prediction[0]:.4f}")
+
 
 
