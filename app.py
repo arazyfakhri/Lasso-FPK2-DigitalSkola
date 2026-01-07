@@ -27,7 +27,7 @@ st.write("Model: Lasso Regression")
 # ==============================
 # Load model (SETELAH fungsi)
 # ==============================
-model = joblib.load("model.pkl")
+model = joblib.load("model_v2.pkl")
 
 # ==============================
 # Input UI
@@ -98,4 +98,5 @@ if st.button("Predict Engagement Rate"):
 
     st.write("Prediction raw output:", prediction)
     st.success(f"Predicted Engagement Rate: {prediction[0]:.4f}")
+
 
