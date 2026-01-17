@@ -104,11 +104,7 @@ if st.button("Predict Engagement Rate"):
     df["is_high_engagement"] = 0
 
 
-    # ===== TEXT FEATURES =====
-    df["text_all_clean_len"] = df["text_all_clean"].str.len()
-    df["text_all_clean_n_words"] =              df["text_all_clean"].str.split().apply(len)
-
-    # ===== DATE FEATURES =====
+       # ===== DATE FEATURES =====
     today = pd.Timestamp.now()
 
     df["timestamp"] = int(today.timestamp())
