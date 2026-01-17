@@ -77,7 +77,7 @@ if st.button("Predict Engagement Rate"):
     "Instagram": 3
 }
 
-platform_num = platform_map.get(platform, 0)
+    platform_num = platform_map.get(platform, 0)
 
     today = pd.Timestamp.now()
 
@@ -91,21 +91,21 @@ platform_num = platform_map.get(platform, 0)
         "text_all_clean": [text_input.lower()]
     })
 
-   df["text_all_clean_len"] = df["text_all_clean"].str.len()
-   df["text_all_clean_n_words"] =    df["text_all_clean"].str.split().apply(len)
+    df["text_all_clean_len"] = df["text_all_clean"].str.len()
+    df["text_all_clean_n_words"] =       df["text_all_clean"].str.split().apply(len)
 
-   today = pd.Timestamp.now()
-   df["timestamp"] = int(today.timestamp())
-   df["date"] = int(today.strftime("%Y%m%d"))
-   df["year"] = today.year
-   df["month_num"] = today.month
-   df["month"] = today.month
-   df["hour"] = post_hour
-   df["day_of_week_num"] = today.dayofweek
-   df["is_weekend"] = 1 if today.dayofweek >= 5 else 0
+    today = pd.Timestamp.now()
+    df["timestamp"] = int(today.timestamp())
+    df["date"] = int(today.strftime("%Y%m%d"))
+    df["year"] = today.year
+    df["month_num"] = today.month
+    df["month"] = today.month
+    df["hour"] = post_hour
+    df["day_of_week_num"] = today.dayofweek
+    df["is_weekend"] = 1 if today.dayofweek >= 5 else 0
 
-   df["engagement_rate_log"] = 0
-   df["is_high_engagement"] = 0
+    df["engagement_rate_log"] = 0
+    df["is_high_engagement"] = 0
 
 
     # ===== TEXT FEATURES =====
