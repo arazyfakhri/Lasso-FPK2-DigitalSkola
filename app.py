@@ -69,72 +69,28 @@ platform = st.selectbox(
 text_input = st.text_area("Post Text")
 
 if st.button("Predict Engagement Rate"):
-    
-    platform_map = {
-    "Facebook": 0,
-    "Twitter": 1,
-    "Reddit": 2,
-    "Instagram": 3
-}
 
+    # mapping platform -> numeric
+    platform_map = {
+        "Facebook": 0,
+        "Twitter": 1,
+        "Reddit": 2,
+        "Instagram": 3
+    }
     platform_num = platform_map.get(platform, 0)
 
-    today = pd.Timestamp.now()
+    # === LOAD TEMPLATE TRAINING (INI KUNCI) ===
+    df = pd.read_csv("schema_row.csv")
 
-    df = pd.DataFrame({
-        "sentiment_score": [sentiment_score],
-        "toxicity_score": [toxicity_score],
-        "user_past_sentiment_avg": [0],
-        "user_engagement_growth": [0],
-        "buzz_change_rate": [0],
-        "platform": [platform_num],
-    })
-
-    today = pd.Timestamp.now()
-    df["timestamp"] = int(today.timestamp())
-    df["date"] = int(today.strftime("%Y%m%d"))
-    df["year"] = today.year
-    df["month_num"] = today.month
-    df["month"] = today.month
+    # === OVERWRITE INPUT USER ===
+    df["sentiment_score"] = sentiment_score
+    df["toxicity_score"] = toxicity_score
+    df["platform"] = platform_num
     df["hour"] = post_hour
-    df["day_of_week_num"] = today.dayofweek
-    df["is_weekend"] = 1 if today.dayofweek >= 5 else 0
 
-    df["engagement_rate_log"] = 0
-    df["is_high_engagement"] = 0
+    # (kalau di schema ada kolom lain yang mau kamu kontrol, set di sini)
 
-
-       # ===== DATE FEATURES =====
-    today = pd.Timestamp.now()
-
-    df["timestamp"] = int(today.timestamp())
-    df["date"] = int(today.strftime("%Y%m%d"))
-
-
-    df["year"] = today.year
-    df["month_num"] = today.month
-    df["month"] = today.month
-    df["hour"] = post_hour
-    df["day_of_week_num"] = today.dayofweek
-    df["day_of_week"] = today.dayofweek
-    df["is_weekend"] = 1 if today.dayofweek >= 5 else 0
-    df["day_type"] = "Weekend" if today.dayofweek >= 5 else "Weekday"
-
-
-    # ===== OTHERS =====
-    df["language_bin"] = "EN"
-    df["language_group"] = "EN"
-    df["country"] = "Unknown"
-    df["continent"] = "Unknown"
-    df["consumer_industry"] = "General"
-
-    df["engagement_rate_log"] = 0
-    df["is_high_engagement"] = 0
-
-    # ===== REORDER COLUMNS =====
-
-    st.write("DEBUG - df preview:", df.head())
-    st.write("DEBUG - df dtypes:", df.dtypes)
+    # === PREDICT ===
 
     prediction = model.predict(df)
 
