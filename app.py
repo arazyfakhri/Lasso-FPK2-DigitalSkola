@@ -140,17 +140,7 @@ if st.button("Predict Engagement Rate"):
     df["is_high_engagement"] = 0
 
     # ===== REORDER COLUMNS =====
-    df = df[[
-        'timestamp','day_of_week','platform','location','topic_category',
-        'sentiment_score','sentiment_label','emotion_type','toxicity_score',
-        'brand_name','product_name','campaign_name','campaign_phase',
-        'user_past_sentiment_avg','user_engagement_growth','buzz_change_rate',
-        'text_all_clean','text_all_clean_len','text_all_clean_n_words',
-        'year','month_num','date','hour','day_of_week_num','is_weekend','month',
-        'language_bin','language_group','country','continent','consumer_industry',
-        'engagement_rate_log','is_high_engagement','day_type'
-    ]]
-
+    
     prediction = model.predict(df)
 
     st.success(f"Predicted Engagement Rate: {prediction[0]:.4f}")
