@@ -140,7 +140,10 @@ if st.button("Predict Engagement Rate"):
     df["is_high_engagement"] = 0
 
     # ===== REORDER COLUMNS =====
-    
+
+    st.write("DEBUG - df preview:", df.head())
+    st.write("DEBUG - df dtypes:", df.dtypes)
+
     prediction = model.predict(df)
 
     st.success(f"Predicted Engagement Rate: {prediction[0]:.4f}")
