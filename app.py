@@ -1,12 +1,17 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import cloudpickle
+import joblib
 
 # ==============================
 # WAJIB: fungsi HARUS ADA
 # SEBELUM joblib.load
 # ==============================
+def to_1d_str(x):
+    x = np.asarray(x)
+    if x.ndim == 2:
+        x = x.ravel()
+    return [str(v) for v in x]
 
 # ==============================
 # Page config
@@ -22,8 +27,7 @@ st.write("Model: Lasso Regression")
 # ==============================
 # Load model (SETELAH fungsi)
 # ==============================
-with open("model_cloud.pkl", "rb") as f:
-    model = cloudpickle.load(f)
+model = joblib.load("model.pkl")
 
 # ==============================
 # Input UI
@@ -63,38 +67,76 @@ platform = st.selectbox(
 # Predict
 # ==============================
 if st.button("Predict Engagement Rate"):
-    input_df = pd.DataFrame({
-        'sentiment_score': [sentiment_score],
-        'toxicity_score': [toxicity_score],
-        'user_past_sentiment_avg': [0],
-        'user_engagement_growth': [0],
-        'buzz_change_rate': [0],
-        'post_year': [2024],
-        'post_month': [1],
-        'post_day': [1],
-        'post_hour': [post_hour],
-        'is_weekend': [is_weekend],
-        'day_of_week': [day_of_week],
-        'platform': [platform],
-        'topic_category': ['Support'],
-        'sentiment_label': ['Neutral'],
-        'emotion_type': ['Neutral'],
-        'brand_name': ['Unknown'],
-        'product_name': ['Unknown'],
-        'campaign_name': ['Unknown'],
-        'campaign_phase': ['Awareness'],
-        'time_of_day': ['day'],
-        'language_bin': ['EN'],
-        'country': ['US'],
-        'consumer_industry': ['General'],
-        'continent': ['North America'],
+
+    import datetime
+
+    text_input = st.text_area("Prediction of your engagement is")
+
+    today = pd.Timestamp.now()
+
+    df = pd.DataFrame({
+        "timestamp": [today],
+        "day_of_week": [today.day_name()],
+        "platform": [platform],
+        "location": ["Unknown"],
+        "topic_category": ["General"],
+        "sentiment_score": [sentiment_score],
+        "sentiment_label": ["Neutral"],
+        "emotion_type": ["Neutral"],
+        "toxicity_score": [toxicity_score],
+        "brand_name": ["Unknown"],
+        "product_name": ["Unknown"],
+        "campaign_name": ["Unknown"],
+        "campaign_phase": ["Awareness"],
+        "user_past_sentiment_avg": [0],
+        "user_engagement_growth": [0],
+        "buzz_change_rate": [0],
+        "text_all_clean": [text_input.lower()],
     })
 
-    prediction = model.predict(input_df)
+    # ===== TEXT FEATURES =====
+    df["text_all_clean_len"] = df["text_all_clean"].str.len()
+    df["text_all_clean_n_words"] =              df["text_all_clean"].str.split().apply(len)
 
-    st.write("Prediction raw output:", prediction)
+    # ===== DATE FEATURES =====
+    today = pd.Timestamp.now()
+
+    df["timestamp"] = int(today.timestamp())
+    df["date"] = int(today.strftime("%Y%m%d"))
+
+
+    df["year"] = today.year
+    df["month_num"] = today.month
+    df["month"] = today.month
+    df["hour"] = post_hour
+    df["day_of_week_num"] = today.dayofweek
+    df["day_of_week"] = today.day_name()
+    df["is_weekend"] = 1 if today.dayofweek >= 5 else 0
+    df["day_type"] = "Weekend" if today.dayofweek >= 5 else "Weekday"
+
+
+    # ===== OTHERS =====
+    df["language_bin"] = "EN"
+    df["language_group"] = "EN"
+    df["country"] = "Unknown"
+    df["continent"] = "Unknown"
+    df["consumer_industry"] = "General"
+
+    df["engagement_rate_log"] = 0
+    df["is_high_engagement"] = 0
+
+    # ===== REORDER COLUMNS =====
+    df = df[[
+        'timestamp','day_of_week','platform','location','topic_category',
+        'sentiment_score','sentiment_label','emotion_type','toxicity_score',
+        'brand_name','product_name','campaign_name','campaign_phase',
+        'user_past_sentiment_avg','user_engagement_growth','buzz_change_rate',
+        'text_all_clean','text_all_clean_len','text_all_clean_n_words',
+        'year','month_num','date','hour','day_of_week_num','is_weekend','month',
+        'language_bin','language_group','country','continent','consumer_industry',
+        'engagement_rate_log','is_high_engagement','day_type'
+    ]]
+
+    prediction = model.predict(df)
+
     st.success(f"Predicted Engagement Rate: {prediction[0]:.4f}")
-
-
-
-
