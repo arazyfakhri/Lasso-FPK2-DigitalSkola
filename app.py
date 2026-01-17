@@ -110,7 +110,7 @@ if st.button("Predict Engagement Rate"):
     df["month"] = today.month
     df["hour"] = post_hour
     df["day_of_week_num"] = today.dayofweek
-    df["day_of_week"] = today.day_name()
+    df["day_of_week"] = today.dayofweek
     df["is_weekend"] = 1 if today.dayofweek >= 5 else 0
     df["day_type"] = "Weekend" if today.dayofweek >= 5 else "Weekday"
 
