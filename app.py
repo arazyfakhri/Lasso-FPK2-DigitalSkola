@@ -66,33 +66,47 @@ platform = st.selectbox(
 # ==============================
 # Predict
 # ==============================
+text_input = st.text_area("Post Text")
+
 if st.button("Predict Engagement Rate"):
+    
+    platform_map = {
+    "Facebook": 0,
+    "Twitter": 1,
+    "Reddit": 2,
+    "Instagram": 3
+}
 
-    import datetime
-
-    text_input = st.text_area("Prediction of your engagement is")
+platform_num = platform_map.get(platform, 0)
 
     today = pd.Timestamp.now()
 
     df = pd.DataFrame({
-        "timestamp": [today],
-        "day_of_week": [today.day_name()],
-        "platform": [platform],
-        "location": ["Unknown"],
-        "topic_category": ["General"],
         "sentiment_score": [sentiment_score],
-        "sentiment_label": ["Neutral"],
-        "emotion_type": ["Neutral"],
         "toxicity_score": [toxicity_score],
-        "brand_name": ["Unknown"],
-        "product_name": ["Unknown"],
-        "campaign_name": ["Unknown"],
-        "campaign_phase": ["Awareness"],
         "user_past_sentiment_avg": [0],
         "user_engagement_growth": [0],
         "buzz_change_rate": [0],
-        "text_all_clean": [text_input.lower()],
+        "platform": [platform_num],
+        "text_all_clean": [text_input.lower()]
     })
+
+   df["text_all_clean_len"] = df["text_all_clean"].str.len()
+   df["text_all_clean_n_words"] =    df["text_all_clean"].str.split().apply(len)
+
+   today = pd.Timestamp.now()
+   df["timestamp"] = int(today.timestamp())
+   df["date"] = int(today.strftime("%Y%m%d"))
+   df["year"] = today.year
+   df["month_num"] = today.month
+   df["month"] = today.month
+   df["hour"] = post_hour
+   df["day_of_week_num"] = today.dayofweek
+   df["is_weekend"] = 1 if today.dayofweek >= 5 else 0
+
+   df["engagement_rate_log"] = 0
+   df["is_high_engagement"] = 0
+
 
     # ===== TEXT FEATURES =====
     df["text_all_clean_len"] = df["text_all_clean"].str.len()
